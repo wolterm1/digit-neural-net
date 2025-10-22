@@ -1,0 +1,11 @@
+/build/
+
+*.git
+*.nn
+#vscode config
+.vscode/
+.cache/
+data/
+#compiled header dateien
+*.gch	
+*.out
