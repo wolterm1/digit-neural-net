@@ -1,6 +1,5 @@
 #include "../neural_net/net.hpp"
 #include "../neural_net/helper.hpp"
-#include <iomanip>
 #include <iostream>
 #include "../neural_net/optimizer.hpp"
 
