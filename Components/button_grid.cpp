@@ -1,5 +1,6 @@
 // button_grid.cpp
 #include "button_grid.hpp"
+#include "vector.hpp"
 
 namespace components {
 
@@ -115,6 +116,20 @@ void ButtonGrid::initVertices() {
 void ButtonGrid::reset() {
   this->initVertices();
   quadColored = lin::Matrix<bool>(rows, columns, false);
+}
+
+lin::Vector<float> ButtonGrid::getNormalizedInput() {
+  lin::Vector<float> result(rows * columns);
+  size_t idx = 0;
+  for (auto &colored : quadColored) {
+    if (colored) {
+      result[idx] = 1.0F;
+    } else {
+      result[idx] = -1.0F;
+    }
+    ++idx;
+  }
+  return result;
 }
 
 }

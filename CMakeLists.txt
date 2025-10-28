@@ -46,12 +46,9 @@ target_link_libraries(components PUBLIC SFML::Graphics PUBLIC lin-alg)
 target_include_directories(components PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Components)
 
 
-add_executable(main src/main.cpp)
-target_compile_features(main PRIVATE cxx_std_17)
-target_link_libraries(main PRIVATE SFML::Graphics components)
-# SFML END
 
-set(DEFS
+
+add_library(neural-net
     neural_net/classification_metrics.cpp
     neural_net/classification_metrics.hpp
     neural_net/confusion_matrix.cpp
@@ -64,18 +61,26 @@ set(DEFS
     neural_net/optimizer.hpp
 )
 
-add_executable(nn_test src/nntest.cpp ${DEFS})
+target_link_libraries(neural-net PUBLIC lin-alg)
+target_include_directories(neural-net PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/neural_net)
 
-add_executable(loadEval src/loadEval.cpp ${DEFS})
 
 
+
+add_executable(nn_test src/nntest.cpp)
+add_executable(loadEval src/loadEval.cpp)
 set(MY_TARGETS nn_test loadEval)
-
 foreach(target ${MY_TARGETS})
-  target_link_libraries(${target} PRIVATE lin-alg)
+  target_link_libraries(${target} PRIVATE neural-net)
 
   if(ENABLE_ASAN)
     target_compile_options(${target} PRIVATE -fsanitize=address)
     target_link_options(${target} PRIVATE -fsanitize=address)
   endif()
 endforeach()
+
+
+add_executable(main src/main.cpp)
+target_compile_features(main PRIVATE cxx_std_17)
+target_link_libraries(main PRIVATE SFML::Graphics components neural-net)
+# SFML END

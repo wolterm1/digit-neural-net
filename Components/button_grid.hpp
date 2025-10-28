@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <matrix.hpp>
 #include <vector>
+#include "vector.hpp"
 
 namespace components {
 
@@ -24,5 +25,7 @@ public:
     void eraseColorBelowCursor(sf::RenderWindow& window);
     void initVertices();
     void reset();
+
+    lin::Vector<float> getNormalizedInput();
 };
 }
