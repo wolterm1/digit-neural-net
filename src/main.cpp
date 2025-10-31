@@ -20,7 +20,7 @@ inline void handleResize(const std::optional<sf::Event> event, sf::View& view, s
 void classificationHandler(const sf::Event& event, ButtonGrid& bGrid, nn::NeuralNet& net) {
   if (const auto& keyRelease = event.getIf<sf::Event::KeyReleased>()) {
     if (keyRelease->code == sf::Keyboard::Key::C) {
-      std::cout << nn::getIndexOfMax(net.classify(bGrid.getNormalizedInput())) << std::flush;
+      //std::cout << nn::getIndexOfMax(net.classify(bGrid.getNormalizedInput())) << std::flush;
     }
   }
 }
@@ -37,7 +37,6 @@ int main()
 
 
     // load Neural Net;
-    auto net = nn::NeuralNet::load_from_file("test");
 
     while (window.isOpen()) {
       while (const std::optional event = window.pollEvent()) {
@@ -46,9 +45,7 @@ int main()
         }
         handleResize(event, view, window);
         bGrid.updateStatus(window, *event);
-        classificationHandler(*event, bGrid, net);
       }
-
       window.clear(sf::Color(100, 100, 100, 10));
       window.draw(bGrid.triaVertices);
       window.display();
