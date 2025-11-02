@@ -69,17 +69,25 @@ void ButtonGrid::drawBelowCursor(sf::RenderWindow& window) {
 }
 
 void ButtonGrid::interpolateSurroundingCells(size_t row, size_t col, sf::Vector2f mousePos) {
-  sf::Vector2f origin = getTrueCellPosition(row, col);
-  for (int r = -1; r <= 1; ++r) {
-    for (int c = -1; c <= 1; ++c) {
-      if (getVertexArrayIndex(row + r, col + c) < triaVertices.getVertexCount() && (r != 0 || c != 0)) {
-        sf::Vector2f  neighbourCenter = getTrueCellPosition(row + r, col + c);
-        size_t idx = getVertexArrayIndex(r, c);
-        float distance = std::sqrt((origin.x - neighbourCenter.x) * (origin.x - neighbourCenter.x) + (origin.y - neighbourCenter.y) * (origin.y - neighbourCenter.y));
-        colorCell(row + r, col + c, sf::Color(100,100,distance*2, 255));
-      }
+  const float maxDist = cellSize * 4.0f; // z. B. 1,5x Zellgröße als Einflussradius
+    for (int r = -1; r <= 1; ++r) {
+        for (int c = -1; c <= 1; ++c) {
+            int nr = static_cast<int>(row) + r;
+            int nc = static_cast<int>(col) + c;
+            if (nr < 0 || nc < 0 || nr >= rows || nc >= columns) continue;
+
+            sf::Vector2f neighborCenter = getTrueCellPosition(nr, nc);
+            float dx = mousePos.x - neighborCenter.x;
+            float dy = mousePos.y - neighborCenter.y;
+            float distance = std::sqrt(dx * dx + dy * dy);
+
+            float t = std::clamp(1.0f - distance/maxDist, 0.0f, 1.0f);
+
+            uint8_t brightnessSoFar = triaVertices[getVertexArrayIndex(nr, nc)].color.r;
+            uint8_t brightness = std::max(static_cast<uint8_t>(255.0F * t), brightnessSoFar);
+            colorCell(nr, nc, sf::Color(brightness, brightness, brightness, 255));
+        }
     }
-  }
 }
 
 sf::Vector2f ButtonGrid::getTrueCellPosition(size_t row, size_t col) const {
