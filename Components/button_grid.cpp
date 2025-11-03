@@ -1,6 +1,7 @@
 // button_grid.cpp
 #include "button_grid.hpp"
 #include <cmath>
+#include <cstddef>
 #include "vector.hpp"
 
 namespace components {
@@ -8,7 +9,6 @@ namespace components {
 ButtonGrid::ButtonGrid(size_t rows, size_t columns) : rows(rows), columns(columns) {
   // grid contains rectangles made out of 2 Triangles with 3 vertices each;
   triaVertices = sf::VertexArray(sf::PrimitiveType::Triangles, rows * columns * 6);
-  quadColored = lin::Matrix<float>(rows, columns, 0.0);
   initVertices();
 }
 
@@ -17,6 +17,11 @@ void ButtonGrid::setCellSize(float size) {
   cellSize = size;
   initVertices();
 }
+
+void ButtonGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+  target.draw(triaVertices);
+}
+
 
 void ButtonGrid::colorCell(size_t row, size_t col, sf::Color color) {
   std::cout << "Updating cell : " << row << ", " << col << '\n';
@@ -149,18 +154,15 @@ void ButtonGrid::reset() {
   this->initVertices();
 }
 
-//lin::Vector<float> ButtonGrid::getNormalizedInput() {
-//  lin::Vector<float> result(rows * columns);
-//  size_t idx = 0;
-//  for (auto &colored : quadColored) {
-//    if (colored) {
-//      result[idx] = 1.0F;
-//    } else {
-//      result[idx] = -1.0F;
-//    }
-//    ++idx;
-//  }
-//  return result;
-//}
+lin::Vector<uint8_t> ButtonGrid::getQuadBrightness() {
+  auto quadCount = triaVertices.getVertexCount() / 6;
+  lin::Vector<uint8_t> res(quadCount, 0);
+  for (size_t i = 0; i < triaVertices.getVertexCount(); i+=6) {
+    const auto& iv = triaVertices[i];
+    uint8_t brightness = (iv.color.r + iv.color.g + iv.color.b) / 3;
+    res[i/6] = brightness;
+  }
+  return res;
+}
 
 }
