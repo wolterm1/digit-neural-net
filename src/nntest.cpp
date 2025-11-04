@@ -39,7 +39,7 @@ int main() {
 
   net.train(trainingNormalizedImages, trainingOneHotLabels, 35, 128, adamOptimizer);
 
-  net.save_to_file("test");
+  net.saveToFile("test");
 
   auto testData = nn::normalize_images(nn::load_mnist_images("data/t10k-images-idx3-ubyte"));
   auto testLabels = nn::one_hot_encode(nn::load_mnist_labels("data/t10k-labels-idx1-ubyte"));

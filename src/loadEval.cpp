@@ -11,7 +11,7 @@ int main() {
   std::cout << " Enter Model To Evaluate: \n";
   std::string str;
   std::cin >> str;
-  auto net = nn::NeuralNet::load_from_file(str);
+  auto net = nn::NeuralNet::loadFromFile(str);
 
   auto testData = nn::normalize_images(nn::load_mnist_images("data/t10k-images-idx3-ubyte"));
   auto testLabels = nn::one_hot_encode(nn::load_mnist_labels("data/t10k-labels-idx1-ubyte"));

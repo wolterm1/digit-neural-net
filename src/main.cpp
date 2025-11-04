@@ -1,13 +1,14 @@
 #include <iostream>
-#include "../Components/button.hpp"
 #include "../Components/button_grid.hpp"
+#include "../Components/probability_histogram.hpp"
 #include <SFML/Graphics.hpp>
 
 #include "../neural_net/net.hpp"
 #include "helper.hpp"
 
-using components::Button;
+using components::ProbabilityHistogram;
 using components::ButtonGrid;
+using nn::NeuralNet;
 
 inline void handleResize(const std::optional<sf::Event> event, sf::View& view, sf::RenderWindow& window) {
   if(const auto* resized = event->getIf<sf::Event::Resized>()) {
@@ -17,13 +18,6 @@ inline void handleResize(const std::optional<sf::Event> event, sf::View& view, s
   }
 }
 
-void classificationHandler(const sf::Event& event, ButtonGrid& bGrid) {
-  if (const auto& keyRelease = event.getIf<sf::Event::KeyReleased>()) {
-    if (keyRelease->code == sf::Keyboard::Key::C) {
-      ;
-    }
-  }
-}
 
 int main()
 {
@@ -35,8 +29,11 @@ int main()
     bGrid.setCellSize(25.0);
     bGrid.setPosition(sf::Vector2f(25.0, 25.0));
 
+    ProbabilityHistogram probHist(10);
+    probHist.setPosition(sf::Vector2f(500.0, 500.0));
 
     // load Neural Net;
+    NeuralNet digitNet = nn::NeuralNet::loadFromFile("test");
 
     while (window.isOpen()) {
       while (const std::optional event = window.pollEvent()) {
@@ -44,11 +41,16 @@ int main()
             window.close();
         }
         handleResize(event, view, window);
+
         bGrid.updateStatus(window, *event);
-        classificationHandler(*event, bGrid);
+
+        const lin::Vector<float>& normBrightness = nn::normalizeImage(bGrid.getImage());
+        auto dist = digitNet.classify(normBrightness);
+        probHist.updateBars(dist);
       }
       window.clear(sf::Color(100, 100, 100, 10));
       window.draw(bGrid);
+      window.draw(probHist);
       window.display();
     }
 }

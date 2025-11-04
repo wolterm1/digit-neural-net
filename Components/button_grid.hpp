@@ -26,7 +26,7 @@ public:
     size_t getVertexArrayIndex(size_t row, size_t col) const;
     sf::Vector2f getTrueCellPosition(size_t row, size_t col) const;
 
-    lin::Vector<uint8_t> getQuadBrightness();
+    lin::Vector<uint8_t> getImage();
     void updateStatus(sf::RenderWindow& window, const sf::Event& event);
     void drawBelowCursor(sf::RenderWindow& window);
     void eraseColorBelowCursor(sf::RenderWindow& window);

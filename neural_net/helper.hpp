@@ -35,6 +35,8 @@ Vector<uint8_t> load_mnist_labels(const std::string& filename);
 
 Vector<Vector<float>> normalize_images(const Vector<Vector<uint8_t>>& images);
 
+Vector<float> normalizeImage(const Vector<uint8_t>& image);
+
 Vector<Vector<float>> one_hot_encode(const Vector<uint8_t>& labels);
 
 void visualize_mnist_images(const Vector<Vector<uint8_t>>& vec);

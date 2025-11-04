@@ -18,8 +18,8 @@ class NeuralNet {
   lin::Vector<float> classify(const lin::Vector<float>& inputData);
   eval::ConfusionMatrix evaluate(const lin::Vector<lin::Vector<float>>& testData, const lin::Vector<lin::Vector<float>>& labels);
 
-  void save_to_file(const std::string& filename);
-  static NeuralNet load_from_file(const std::string& filename); // factory method to construct a Neural Net from File
+  void saveToFile(const std::string& filename);
+  static NeuralNet loadFromFile(const std::string& filename); // factory method to construct a Neural Net from File
 
   friend std::ostream& operator<<(std::ostream& outputstream, const NeuralNet& net);
 

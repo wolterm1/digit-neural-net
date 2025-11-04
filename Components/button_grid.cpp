@@ -154,7 +154,7 @@ void ButtonGrid::reset() {
   this->initVertices();
 }
 
-lin::Vector<uint8_t> ButtonGrid::getQuadBrightness() {
+lin::Vector<uint8_t> ButtonGrid::getImage() {
   auto quadCount = triaVertices.getVertexCount() / 6;
   lin::Vector<uint8_t> res(quadCount, 0);
   for (size_t i = 0; i < triaVertices.getVertexCount(); i+=6) {

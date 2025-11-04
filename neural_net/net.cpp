@@ -166,7 +166,7 @@ ConfusionMatrix NeuralNet::evaluate(const Vector<Vector<float>>& testData, const
 }
 
 
-void NeuralNet::save_to_file(const std::string& filename){
+void NeuralNet::saveToFile(const std::string& filename){
   auto renamedFilename = filename;
   if (std::filesystem::exists(filename)) {
     renamedFilename = genTimeStampForFilename(filename).str();
@@ -196,7 +196,7 @@ void NeuralNet::save_to_file(const std::string& filename){
 }
 
 
-NeuralNet NeuralNet::load_from_file(const std::string& filename) {
+NeuralNet NeuralNet::loadFromFile(const std::string& filename) {
   std::fstream file(filename, std::ios::in | std::ios::binary);
   std::string magic(5, ' ');
   uint64_t weightMatricesCount;

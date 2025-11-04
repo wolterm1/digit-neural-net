@@ -177,13 +177,23 @@ Vector<Vector<float>> normalize_images(const Vector<Vector<uint8_t>>& images) {
   for(int i=0; i<images.getSize(); ++i) {
     Vector<float> normalized(images[i].getSize());
     for(int j=0; j<images[i].getSize(); ++j) {
-      normalized[j] = ((static_cast<float>(images[i][j])/255.0f - 0.5f)) * 2.0f;
+      normalized[j] = ((static_cast<float>(images[i][j])/255.0F - 0.5F)) * 2.0F;
     }
     results[i] = (std::move(normalized));
   }
   return results;
 }
 
+
+
+
+Vector<float> normalizeImage(const Vector<uint8_t>& image) {
+  Vector<float> result(image.getSize());
+  for (int i = 0; i < image.getSize(); ++i) {
+    result[i] = static_cast<float>(((image[i] / 255.0F) - 0.5F) * 2.0);
+  }
+  return result;
+}
 
 lin::Vector<lin::Vector<float>> one_hot_encode(const Vector<uint8_t>& labels) {
   lin::Vector<lin::Vector<float>> result(labels.getSize());
