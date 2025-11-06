@@ -1,12 +1,12 @@
-#include <iostream>
 #include "../Components/button_grid.hpp"
-#include "../Components/probability_histogram.hpp"
+#include "../Components/histogram.hpp"
+#include "../Components/ui_manager.hpp"
+
 #include <SFML/Graphics.hpp>
 
 #include "../neural_net/net.hpp"
-#include "helper.hpp"
 
-using components::ProbabilityHistogram;
+using components::Histogram;
 using components::ButtonGrid;
 using nn::NeuralNet;
 
@@ -19,38 +19,25 @@ inline void handleResize(const std::optional<sf::Event> event, sf::View& view, s
 }
 
 
+
 int main()
 {
-    auto window= sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
+
+
+    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "Digit-NN");
     window.setFramerateLimit(144);
     sf::View view = window.getDefaultView();
-
-    ButtonGrid bGrid(28, 28);
-    bGrid.setCellSize(25.0);
-    bGrid.setPosition(sf::Vector2f(25.0, 25.0));
-
-    ProbabilityHistogram probHist(10);
-    probHist.setPosition(sf::Vector2f(500.0, 500.0));
 
     // load Neural Net;
     NeuralNet digitNet = nn::NeuralNet::loadFromFile("test");
 
+    UIManager ui(window, digitNet);
+
     while (window.isOpen()) {
       while (const std::optional event = window.pollEvent()) {
-        if (event->is<sf::Event::Closed>()) {
-            window.close();
-        }
-        handleResize(event, view, window);
-
-        bGrid.updateStatus(window, *event);
-
-        const lin::Vector<float>& normBrightness = nn::normalizeImage(bGrid.getImage());
-        auto dist = digitNet.classify(normBrightness);
-        probHist.updateBars(dist);
+        ui.handleEvent(*event);
       }
-      window.clear(sf::Color(100, 100, 100, 10));
-      window.draw(bGrid);
-      window.draw(probHist);
-      window.display();
+      ui.update();
+      ui.draw();
     }
 }

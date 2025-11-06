@@ -13,9 +13,13 @@ ButtonGrid::ButtonGrid(size_t rows, size_t columns) : rows(rows), columns(column
 }
 
 
-void ButtonGrid::setCellSize(float size) {
-  cellSize = size;
+void ButtonGrid::setSize(float target) {
+  size = target;
   initVertices();
+}
+
+float ButtonGrid::getSize() const {
+  return size;
 }
 
 void ButtonGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -64,8 +68,8 @@ void ButtonGrid::drawBelowCursor(sf::RenderWindow& window) {
 
   sf::FloatRect gridBounds = triaVertices.getBounds();
   auto startPos = gridBounds.position;
-  size_t row = static_cast<size_t>((-startPos.y + viewMousePos.y) / (cellSize));
-  size_t col = static_cast<size_t>((-startPos.x + viewMousePos.x) / (cellSize));
+  size_t row = static_cast<size_t>((-startPos.y + viewMousePos.y) / (getCellSize()));
+  size_t col = static_cast<size_t>((-startPos.x + viewMousePos.x) / (getCellSize()));
 
   if (gridBounds.contains(viewMousePos)) {
     this->colorCell(row, col, sf::Color::White);
@@ -74,7 +78,7 @@ void ButtonGrid::drawBelowCursor(sf::RenderWindow& window) {
 }
 
 void ButtonGrid::interpolateSurroundingCells(size_t row, size_t col, sf::Vector2f mousePos) {
-  const float maxDist = cellSize * 4.0f; // z. B. 1,5x Zellgröße als Einflussradius
+  const float maxDist = getCellSize() * 4.0F; // z. B. 1,5x Zellgröße als Einflussradius
     for (int r = -1; r <= 1; ++r) {
         for (int c = -1; c <= 1; ++c) {
             int nr = static_cast<int>(row) + r;
@@ -86,7 +90,7 @@ void ButtonGrid::interpolateSurroundingCells(size_t row, size_t col, sf::Vector2
             float dy = mousePos.y - neighborCenter.y;
             float distance = std::sqrt(dx * dx + dy * dy);
 
-            float t = std::clamp(1.0f - distance/maxDist, 0.0f, 1.0f);
+            float t = std::clamp(1.0F - distance/maxDist, 0.0F, 1.0F);
 
             uint8_t brightnessSoFar = triaVertices[getVertexArrayIndex(nr, nc)].color.r;
             uint8_t brightness = std::max(static_cast<uint8_t>(255.0F * t), brightnessSoFar);
@@ -97,6 +101,7 @@ void ButtonGrid::interpolateSurroundingCells(size_t row, size_t col, sf::Vector2
 
 sf::Vector2f ButtonGrid::getTrueCellPosition(size_t row, size_t col) const {
   size_t idx = getVertexArrayIndex(row, col);
+  float cellSize = getCellSize();
   sf::Vector2f offset(cellSize/2.0F, cellSize/2.0F);
   return triaVertices[idx].position + offset;
 }
@@ -107,6 +112,8 @@ void ButtonGrid::eraseColorBelowCursor(sf::RenderWindow& window) {
 
   sf::FloatRect gridBounds = triaVertices.getBounds();
   auto startPos = gridBounds.position;
+  float cellSize = getCellSize();
+
   size_t row = static_cast<size_t>((-startPos.y + viewMousePos.y) / (cellSize));
   size_t col = static_cast<size_t>((-startPos.x + viewMousePos.x) / (cellSize));
 
@@ -116,22 +123,22 @@ void ButtonGrid::eraseColorBelowCursor(sf::RenderWindow& window) {
 }
 
 void ButtonGrid::setPosition(sf::Vector2f target) {
-  position = target;
-  for (size_t r = 0; r < rows; ++r) {
-    for (size_t c = 0; c < columns; ++c) {
-      size_t idx = getVertexArrayIndex(r, c);
-
-      for(size_t i = 0; i < 6; ++i) {
-        triaVertices[idx + i].position += target;
-      }
-    }
+  sf::Vector2f delta = target - position;
+  for (size_t i = 0; i < triaVertices.getVertexCount(); ++i) {
+    triaVertices[i].position += delta;
   }
+  position = target;
+}
+
+sf::Vector2f ButtonGrid::getPosition() const {
+  return position;
 }
 
 void ButtonGrid::initVertices() {
   for (size_t r = 0; r < rows; ++r) {
     for (size_t c = 0; c < columns; ++c) {
 
+      float cellSize = getCellSize();
       sf::Vector2f triaPos(position.x + (c * cellSize), position.y + (r * cellSize));
       size_t idx = getVertexArrayIndex(r, c);
 
@@ -163,6 +170,10 @@ lin::Vector<uint8_t> ButtonGrid::getImage() {
     res[i/6] = brightness;
   }
   return res;
+}
+
+float ButtonGrid::getCellSize() const {
+  return size / 28.0F;
 }
 
 }

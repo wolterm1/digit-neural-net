@@ -41,8 +41,10 @@ add_library(components
     Components/button.hpp
     Components/button_grid.hpp
     Components/button_grid.cpp
-    Components/probability_histogram.hpp
-    Components/probability_histogram.cpp
+    Components/histogram.hpp
+    Components/histogram.cpp
+    Components/ui_manager.hpp
+    Components/ui_manager.cpp
 )
 target_link_libraries(components PUBLIC SFML::Graphics PUBLIC lin-alg)
 target_include_directories(components PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Components)
