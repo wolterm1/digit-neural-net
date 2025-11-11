@@ -38,6 +38,7 @@ cmake -S . -B build
 cmake --build build
 ./build/bin/main #{train, evaluate_model}
 ```
+For training create the folder data/ and put training and validating set there. Adjust main() in src/train.cpp or main in src/evaluate_model.cpp according to the filenames.
 
 ---
 
