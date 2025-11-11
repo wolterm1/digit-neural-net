@@ -29,7 +29,7 @@ int main()
     sf::View view = window.getDefaultView();
 
     // load Neural Net;
-    NeuralNet digitNet = nn::NeuralNet::loadFromFile("test");
+    NeuralNet digitNet = nn::NeuralNet::loadFromFile("model97");
 
     UIManager ui(window, digitNet);
 

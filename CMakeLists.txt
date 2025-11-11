@@ -71,9 +71,9 @@ target_include_directories(neural-net PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/neural_
 
 
 
-add_executable(nn_test src/nntest.cpp)
-add_executable(loadEval src/loadEval.cpp)
-set(MY_TARGETS nn_test loadEval)
+add_executable(train src/train.cpp)
+add_executable(evaluate_model src/evaluate_model.cpp)
+set(MY_TARGETS train evaluate_model)
 foreach(target ${MY_TARGETS})
   target_link_libraries(${target} PRIVATE neural-net)
 
